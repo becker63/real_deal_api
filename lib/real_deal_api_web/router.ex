@@ -19,6 +19,12 @@ defmodule RealDealApiWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+  end
+
+  pipeline :auth do
+    plug RealDealApiWeb.Auth.Pipeline
+    plug RealDealApiWeb.Auth.SetAccount
   end
 
   scope "/api", RealDealApiWeb do
@@ -26,5 +32,11 @@ defmodule RealDealApiWeb.Router do
     get "/", DefaultController, :index
     post "/accounts/create", AccountController, :create
     post "/accounts/sign_in", AccountController, :sign_in
+  end
+
+  # Secured routes
+  scope "/api", RealDealApiWeb do
+    pipe_through [:api, :auth]
+    get("/accounts/by_id/:id", AccountController, :show)
   end
 end
