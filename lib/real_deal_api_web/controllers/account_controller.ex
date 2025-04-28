@@ -6,6 +6,17 @@ defmodule RealDealApiWeb.AccountController do
 
   action_fallback RealDealApiWeb.FallbackController
 
+  defp is_authorized_account(conn, _opts) do
+    %{params: %{"account" => params}} = conn
+    account = Accounts.get_account!(params["id"])
+
+    if conn.assigns.account.id == account.id do
+      conn
+    else
+      raise ErrorResponse.Forbidden
+    end
+  end
+
   def index(conn, _params) do
     accounts = Accounts.list_accounts()
     render(conn, "index.json", accounts: accounts)
@@ -34,7 +45,7 @@ defmodule RealDealApiWeb.AccountController do
     end
   end
 
-  def show(conn) do
+  def show(conn, _params) do
     render(conn, "show.json", account: conn.assigns.account)
   end
 

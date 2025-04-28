@@ -2,19 +2,12 @@ defmodule RealDealApiWeb.Router do
   use RealDealApiWeb, :router
   use Plug.ErrorHandler
 
-  defp handle_errors(conn, %{reason: %Phoenix.Router.NoRouteError{message: message}}) do
+  def handle_errors(conn, %{reason: %Phoenix.Router.NoRouteError{message: message}}) do
     conn |> json(%{errors: message}) |> halt()
   end
 
-  defp handle_errors(conn, %{reason: %{message: message}}) do
+  def handle_errors(conn, %{reason: %{message: message}}) do
     conn |> json(%{errors: message}) |> halt()
-  end
-
-  defp handle_errors(conn, _error_info) do
-    conn
-    |> put_status(:internal_server_error)
-    |> json(%{errors: "Unexpected error occurred"})
-    |> halt()
   end
 
   pipeline :api do
@@ -34,9 +27,8 @@ defmodule RealDealApiWeb.Router do
     post "/accounts/sign_in", AccountController, :sign_in
   end
 
-  # Secured routes
   scope "/api", RealDealApiWeb do
     pipe_through [:api, :auth]
-    get("/accounts/by_id/:id", AccountController, :show)
+    get "/accounts/by_id/:id", AccountController, :show
   end
 end

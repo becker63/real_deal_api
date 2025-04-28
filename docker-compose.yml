@@ -7,8 +7,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: backend_stuff
+      POSTGRES_PASSWORD: blork_erlang
+      POSTGRES_DB: real_deal_api_dev
     volumes:
       - pgdata:/var/lib/postgresql/data
 
